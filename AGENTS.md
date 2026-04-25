@@ -2,8 +2,12 @@
 
 ## Project Structure & Module Organization
 - `README.md`: system overview + operator entrypoint.
+- `INTRODUCTION.md`: intent, boundaries, and contribution expectations.
+- `CODE.md`: core gate logic + reference service notes.
 - `docs/validation-model.md`: the hardening/validation gate (what must be true before “ship”).
 - `docs/diagrams/`: topology diagrams (ASCII today; PNG optional later).
+- `wiki/`: repo-local wiki pages (architecture, execution flow, stack, validation).
+- `apps/`: reference services (start at `apps/node-blood/server.js`).
 - `LICENSE`: licensing terms.
 
 If/when runtime code lands here, keep it obvious and modular (example: `services/`, `scripts/`, `packages/`, `infra/`), and ensure every service has a matching validation command in `docs/validation-model.md`.
