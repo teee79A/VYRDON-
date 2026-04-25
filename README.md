@@ -1,123 +1,68 @@
-# VYRDON
+# VYRDON — Validation-Gated Execution System
 
-Validation-Gated Execution System
+VYRDON is built on one rule: **execution does not imply validity**. Operations are only accepted when they pass explicit validation laws and produce verifiable evidence.
 
----
+## Start Here
 
-## 1. Introduction
+- `INTRODUCTION.md` — intent, boundaries, and operator laws.
+- `docs/validation-model.md` — executable checklist (commands + expected outcomes).
+- `wiki/Home.md` — architecture, execution flow, stack, and validation pages.
+- `CODE.md` — core gate logic + reference services (`apps/node-blood/server.js`).
 
-VYRDON defines a system where execution does not imply validity.
+## Core Principle
 
-Most systems treat successful execution as completion.  
-VYRDON rejects this assumption.
+**Execution ≠ Acceptance.**  
+If any validation condition fails: `ACCEPTANCE = FALSE`.  
+No partial acceptance exists.
 
-An operation may execute, but it is only accepted if it can be verified across defined conditions.
+## System Model
 
-Execution is an intermediate event.  
-Acceptance is a validated state.
-
----
-
-## 2. Core Principle
-
-Execution ≠ Acceptance
-
-If any validation condition fails:
-
-ACCEPTANCE = FALSE
-
-No partial acceptance exists.  
-Execution without validation is treated as non-valid.
-
----
-
-## 3. System Model
-
-
+```text
 REQUEST
-↓
+  ↓
 VALIDATION GATE
-↓
+  ↓
 EXECUTION
-↓
+  ↓
 EVIDENCE
-↓
+  ↓
 STATE COMMIT
-↓
+  ↓
 INTEGRITY CHECK
-↓
+  ↓
 ACCEPT / REJECT
+```
 
+Execution may occur. Acceptance is conditional.
 
-Execution may occur.  
-Acceptance is conditional.
+## Validation Law (High Level)
 
----
-
-## 4. Validation Law
-
-
+```text
 ACCEPT = Authority AND Executor AND Evidence AND State AND Integrity
 ANY FALSE = REJECT
+```
 
+## Boundary Model (Lanes)
 
----
+```text
+Internet → Cloudflare (Tunnel+Access)
+  ├─ VYRDx (Public Product)    : public allowlist only
+  ├─ VYRDEN (AI Room)          : authenticated, default-deny
+  └─ KITTY / VXSTATION (Ops)   : operator-only control plane
+```
 
-## 5. Constraint Model
+The public product and hidden/control lanes must never share a public entrypoint.
 
-Acceptance is produced only when all validation conditions converge into a consistent state.
+## Quick Validation
 
-If convergence fails:
+```bash
+make verify
+```
 
+## Security Notes
 
-SYSTEM OUTPUT = NULL
-
-
-Execution is ignored.
-
----
-
-## 6. Execution Philosophy
-
-Execution is not treated as final.
-
-Every operation must resolve into:
-
-- ACCEPT  
-- NULL (non-valid)
-
-Rejected behaviors:
-
-- retry-based resolution  
-- unresolved states  
-- implicit trust  
-- UI-based validation  
-
----
-
-## 7. Architecture
-
-VYRDON operates as a constraint-driven system:
-
-| Component   | Role |
-|------------|------|
-| VYRDON     | validation logic |
-| VYRDx      | execution runtime |
-| Consolab   | evidence and certification |
-| Vyrden     | analysis |
-| VXStation  | monitoring |
-
-No component can independently produce acceptance.
-
----
-
-## 8. Technical Stack
-
-- Rust — deterministic validation  
-- Python — orchestration  
-- Node.js — runtime communication  
-- Go — monitoring  
-- Shell — deployment  
+- Never commit secrets (tokens/keys). Use `[REDACTED_SECRET]`.
+- Avoid publishing production IPs, tunnel IDs, or internal hostnames in public docs.
 - JSON / YAML / TOML — configuration  
 
 ---
