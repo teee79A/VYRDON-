@@ -1,0 +1,78 @@
+{
+  "ok": true,
+  "timestamp": "2026-05-02T19-02-08-717Z",
+  "repository": "teee79A/VYRDON-",
+  "branch": "upgrade/repo-public-surface",
+  "checks": [
+    {
+      "name": "README exists",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "docs/wiki pages exist",
+      "ok": true,
+      "details": {
+        "pages": [
+          "Home.md",
+          "VYRDX-Runtime.md",
+          "Certificate-Flow.md",
+          "Evidence-and-Tracking.md",
+          "API-Contract.md",
+          "Operator-Runbook.md",
+          "License-and-Open-Source.md"
+        ]
+      }
+    },
+    {
+      "name": "README contains VYRDX",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "README contains certificate flow",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "README contains feedback API",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "README contains try-us API",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "README contains certify API",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "README contains verify API",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "README excludes private AI-room operations",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "README excludes private operation details",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "License section mentions Apache-2.0 and MIT",
+      "ok": true,
+      "details": {}
+    },
+    {
+      "name": "AUTO_POST is not enabled",
+      "ok": true,
+      "details": {}
+    }
+  ]
+}

@@ -1,33 +1,36 @@
 # Introduction
 
-VYRDON is engineered around **hard boundaries** and **fail-closed validation**. The goal is to ship real-market capability without accidentally exposing hidden control planes, internal AI lanes, or mutable operational surfaces to the public internet.
+VYRDON is engineered around hard boundaries, fail-closed validation, and public evidence. The goal of this repository is to document the controlled public surface without publishing non-public runtime operations.
 
 ## What This Repo Is
 
-This repository is the **documentation + validation gate** for the split:
+This repository is the public documentation and validation gate for:
 
-- **VYRDx (Public)** — product surface only (commercial, evidence-public, billing, proof).
-- **VYRDEN (AI Room)** — internal intelligence/agent lane; authenticated, default-deny.
-- **KITTY / VXSTATION (Control Plane)** — operator tools + orchestration; not the public product.
+- VYRDON identity and operating rules.
+- VYRDX public runtime purpose.
+- Public teaser/prelaunch API flow.
+- Certificate verification flow.
+- Public-safe wiki source pages.
 
-If a change cannot be expressed as a validation step, it is not “done”.
+If a change cannot be expressed as a validation step, it is not done.
 
 ## Core Operator Laws
 
-1. **Fail closed**: missing truth must become `NOPASS`, not “best effort”.
-2. **Default deny**: internal mutation routes require explicit auth (Cloudflare Access, session, or shared secret).
-3. **Separate ingress**: public surfaces and hidden surfaces do not share a public entrypoint.
-4. **Evidence-first**: every promotion is backed by verifiable commands and outputs.
+1. Fail closed: missing truth becomes `NOPASS`, not best effort.
+2. Public routes are bounded and explicit.
+3. Public evidence must be tracked before a claim is accepted.
+4. No fake completion and no untracked action.
 
 ## Where To Read
 
-- `docs/validation-model.md`: the executable checklist (commands + expected outcomes).
-- `wiki/Architecture.md`: service boundary model and trust zones.
-- `wiki/Execution-Flow.md`: request paths and deployment flow.
-- `CODE.md`: reference implementations (including the `apps/node-blood` bridge).
+- `README.md`: public entrypoint and links.
+- `docs/wiki/`: public wiki source.
+- `docs/validation-model.md`: public-surface validation checklist.
+- `CODE.md`: reference gate logic.
 
 ## How To Contribute
 
-- Keep docs copy/paste friendly (exact commands, paths, and expected exit codes).
-- Use diagrams when it reduces ambiguity (`docs/diagrams/` or `wiki/` pages).
-- Redact secrets as `[REDACTED_SECRET]`. Prefer env-var names over values.
+- Keep docs copy/paste friendly.
+- Redact secrets as `[REDACTED_SECRET]`.
+- Do not add unsupported launch claims.
+- Do not add non-public runtime details.
