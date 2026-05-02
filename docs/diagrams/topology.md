@@ -1,39 +1,36 @@
-# Topology Diagrams (ASCII)
+# Topology Diagrams
 
-## Service Boundary Split
+## Public Surface
 
 ```text
-                ┌──────────────────────────┐
-Internet  ───▶  │ Cloudflare (Tunnel+Access)│
-                └─────────────┬────────────┘
-                              │
-         ┌────────────────────┴─────────────────────┐
-         │                                          │
-         ▼                                          ▼
-┌───────────────────────┐                ┌────────────────────────┐
-│ VYRDx Public Surface   │                │ VYRDEN AI Room          │
-│ domain: vyrdx.*        │                │ domain: vyrden.*        │
-│ - public routes only   │                │ - operator/agent auth   │
-│ - billing/proof flows  │                │ - /ws + /api/chat       │
-└───────────┬───────────┘                └────────────┬───────────┘
-            │                                          │
-            ▼                                          ▼
-      Postgres/Redis                             Inference Router
-      (product state)                       (CF/MiniMax/Ollama/OR)
+Visitor
+  |
+  v
+vyrdon.com
+  |
+  v
+vyrdx.vyrdon.com
+  |
+  +--> POST /api/monitor/feedback
+  +--> POST /api/try-us
+  +--> POST /api/certify
+  +--> GET  /api/verify/:id
 ```
 
-## AI Room Request Path
+## Certificate Path
 
 ```text
-Browser UI
-  ├─ POST /auth/login  → sets session cookie (secure)
-  ├─ POST /api/chat    → JSON or SSE streaming
-  └─ GET  /ws          → WebSocket (token/auth required)
+Public request
+  -> evidence record
+  -> certificate review
+  -> issue or reject
+  -> public verify lookup
+```
 
-Failure checkpoints:
-  1) Cloudflare Access 403
-  2) App auth 401 / WS close 1008
-  3) Cookies not sent (Secure + http mismatch)
-  4) Inference offline-fallback
-  5) Service not booting (/health fails)
+## Public Validation Path
+
+```text
+README + docs/wiki + API contract + license boundary + evidence JSON
+  -> node scripts/validate-public-surface.mjs
+  -> PASS / NOPASS
 ```

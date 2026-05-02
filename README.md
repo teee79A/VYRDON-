@@ -1,57 +1,96 @@
-# VYRDON — Validation-Gated Execution System
+# VYRDON
 
-VYRDON treats **execution as an event**, not proof. An operation is accepted only when it passes explicit gates and produces verifiable evidence.
+VYRDON is the validation-first public system behind VYRDX. It treats public action as something that must be tracked, certified, and verifiable before it is accepted as real.
 
-## Start Here
+This repository is the controlled public surface for VYRDON and VYRDX. It documents the teaser/prelaunch state, the public API flow, the certificate path, and the repo-local wiki source used for GitHub Wiki content.
 
-- `INTRODUCTION.md` — intent, boundaries, and operator laws.
-- `docs/validation-model.md` — executable checklist (commands + expected outcomes).
-- `wiki/Home.md` — architecture, execution flow, stack, and validation pages.
-- `CODE.md` — core gate logic + reference services.
-- `apps/node-blood/server.js` — reference Node bridge (“nerve system”) + gate evaluator.
+## Live Links
 
-## Core Laws (Fail-Closed)
+- VYRDON: https://vyrdon.com
+- VYRDX runtime: https://vyrdx.vyrdon.com
 
-- **Execution ≠ Acceptance**
-- **Fail closed**: unknown becomes `NOPASS`
-- **Default deny**: internal mutation requires explicit auth
-- **Separate ingress**: public product ≠ hidden lanes
-- **Evidence-first**: promotion requires commands + outputs
+## VYRDX Runtime Purpose
 
-## System Model
+VYRDX is the public runtime surface for VYRDON. Its job is to receive public feedback, open controlled TRY US ON US access, issue certification requests, and verify public certificate IDs through a bounded API contract.
 
-```text
-REQUEST
-  ↓
-VALIDATION GATE
-  ↓
-EXECUTION
-  ↓
-EVIDENCE
-  ↓
-STATE COMMIT
-  ↓
-INTEGRITY CHECK
-  ↓
-ACCEPT / REJECT
-```
+VYRDX does not claim completion from a visual page alone. It must connect public actions to evidence, certificate status, and verification output.
 
-## Boundary Model (Lanes)
+## Menu Map
+
+- US
+- MISSION
+- TRY US ON US
+- CERTIFY
+- VERIFY
+- CONTACT
+- LICENSE
+- FOLLOW US
+
+## Real API Flow
+
+Public API routes expected by the teaser surface:
 
 ```text
-Internet → Cloudflare (Tunnel+Access)
-  ├─ VYRDx (Public Product)    : public allowlist only
-  ├─ VYRDEN (AI Room)          : authenticated, default-deny
-  └─ KITTY / VXSTATION (Ops)   : operator-only control plane
+POST /api/monitor/feedback
+POST /api/try-us
+POST /api/certify
+GET  /api/verify/:id
 ```
 
-## Quick Validation
+Flow:
+
+1. `POST /api/monitor/feedback` records public feedback and monitoring signals.
+2. `POST /api/try-us` accepts controlled TRY US ON US access requests.
+3. `POST /api/certify` starts the certificate flow for a public request.
+4. `GET /api/verify/:id` verifies a certificate or evidence ID without exposing internal operations.
+
+## Certificate Flow
+
+The certificate flow is public and evidence-bound:
+
+```text
+request -> evidence record -> certificate issue/reject -> public verify lookup
+```
+
+A certificate is not a marketing claim. It is a verification output tied to a request ID, evidence state, and the public `GET /api/verify/:id` path.
+
+## Status
+
+- Controlled teaser / prelaunch
+- No fake completion
+- No untracked action
+- No unsupported launch claims
+
+This repo documents the public opening path. It does not publish non-public operations or untracked automation.
+
+## Wiki Source
+
+GitHub Wiki source pages live in `docs/wiki/`:
+
+- `Home.md`
+- `VYRDX-Runtime.md`
+- `Certificate-Flow.md`
+- `Evidence-and-Tracking.md`
+- `API-Contract.md`
+- `Operator-Runbook.md`
+- `License-and-Open-Source.md`
+
+## Validation
+
+Run the public-surface validator:
 
 ```bash
-make verify
+node scripts/validate-public-surface.mjs
 ```
 
-## Security Notes
+The validator checks the README, wiki source pages, public API contract language, license notes, private-surface guardrails, and AUTO_POST state. It writes evidence to:
 
-- Never commit secrets. Use `[REDACTED_SECRET]`.
-- Avoid publishing production IPs, tunnel IDs, or internal hostnames in public docs.
+```text
+evidence/repo-public-surface/<timestamp>.json
+```
+
+## License
+
+Apache-2.0 and MIT components may be used where appropriate.
+
+VYRDON-owned runtime logic, evidence systems, brand assets, and verification outputs remain controlled. Public documentation in this repository does not grant rights to VYRDON marks, runtime evidence systems, certificate outputs, or controlled verification products beyond the licenses explicitly attached to individual components.
