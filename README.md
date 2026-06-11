@@ -1,34 +1,65 @@
-# VYRDON
+# VYRDON — Root Routing Law
 
-VYRDON is the validation-first public system behind VYRDX. It treats public action as something that must be tracked, certified, and verifiable before it is accepted as real.
+VYRDON is a root-routing system built on a new routing code.
 
-This repository is the controlled public surface for VYRDON and VYRDX. It documents the teaser/prelaunch state, the public API flow, the certificate path, and the repo-local wiki source used for GitHub Wiki content.
+Not programming code.
+Not translation code.
+Routing code.
 
-## Live Links
+It decides whether proof, authority, transaction state, and execution have the right to pass.
 
-- VYRDON: https://vyrdon.com
-- VYRDX runtime: https://vyrdx.vyrdon.com
+## Root Law Hash
 
-## VYRDX Runtime Purpose
+VYRDON does not ask whether an action can execute.
+VYRDON asks whether the route has the right to pass.
 
-VYRDX is the public runtime surface for VYRDON. Its job is to receive public feedback, open controlled TRY US ON US access, issue certification requests, and verify public certificate IDs through a bounded API contract.
+PASS is never default.
+A route passes only when proof, authority, trace, and state match the signed root hash.
 
-VYRDX does not claim completion from a visual page alone. It must connect public actions to evidence, certificate status, and verification output.
+## System Diagram
 
-## Menu Map
+```text
+VYRDON
+│
+├── ConsoleLab
+│   Authority engineering
+│
+├── VYRDX / ڤيرديكس
+│   Cloud runtime for transaction route governance
+│
+├── VYRDEN / ڤيردن
+│   Engine domain: AI room, bots, signals, engines
+│
+└── VXSTATION / ڤيكس ستيشن
+    Isolated operations station
+```
 
-- US
-- MISSION
-- TRY US ON US
-- CERTIFY
-- VERIFY
-- CONTACT
-- LICENSE
-- FOLLOW US
+## Route Decision
 
-## Real API Flow
+```text
+REQUEST
+  │
+  ▼
+VYRDON ROUTE GATE
+  │
+  ├── proof
+  ├── authority
+  ├── state
+  ├── trace
+  └── risk
+        │
+        ▼
+PASS / HOLD / BLOCK / CHALLENGE
+        │
+        ▼
+EXECUTION OR STOP
+```
 
-Public API routes expected by the teaser surface:
+## VYRDX Contract Boundary
+
+VYRDX / ڤيرديكس is the cloud runtime for transaction route governance. It is not deployed on the VYRDON Mother droplet.
+
+Public VYRDX contract names:
 
 ```text
 POST /api/monitor/feedback
@@ -37,60 +68,18 @@ POST /api/certify
 GET  /api/verify/:id
 ```
 
-Flow:
-
-1. `POST /api/monitor/feedback` records public feedback and monitoring signals.
-2. `POST /api/try-us` accepts controlled TRY US ON US access requests.
-3. `POST /api/certify` starts the certificate flow for a public request.
-4. `GET /api/verify/:id` verifies a certificate or evidence ID without exposing internal operations.
-
 ## Certificate Flow
-
-The certificate flow is public and evidence-bound:
 
 ```text
 request -> evidence record -> certificate issue/reject -> public verify lookup
 ```
 
-A certificate is not a marketing claim. It is a verification output tied to a request ID, evidence state, and the public `GET /api/verify/:id` path.
+## Boundary
 
-## Status
+Public material can describe VYRDON, Root Routing Law, ConsoleLab, VYRDX, VYRDEN, VXSTATION, route contracts, certificate flow, and evidence expectations.
 
-- Controlled teaser / prelaunch
-- No fake completion
-- No untracked action
-- No unsupported launch claims
-
-This repo documents the public opening path. It does not publish non-public operations or untracked automation.
-
-## Wiki Source
-
-GitHub Wiki source pages live in `docs/wiki/`:
-
-- `Home.md`
-- `VYRDX-Runtime.md`
-- `Certificate-Flow.md`
-- `Evidence-and-Tracking.md`
-- `API-Contract.md`
-- `Operator-Runbook.md`
-- `License-and-Open-Source.md`
-
-## Validation
-
-Run the public-surface validator:
-
-```bash
-node scripts/validate-public-surface.mjs
-```
-
-The validator checks the README, wiki source pages, public API contract language, license notes, private-surface guardrails, and AUTO_POST state. It writes evidence to:
-
-```text
-evidence/repo-public-surface/<timestamp>.json
-```
+Private credentials, internal operator controls, private runtime material, API keys, tokens, private keys, seed phrases, wallet files, and database passwords are not public content.
 
 ## License
 
 Apache-2.0 and MIT components may be used where appropriate.
-
-VYRDON-owned runtime logic, evidence systems, brand assets, and verification outputs remain controlled. Public documentation in this repository does not grant rights to VYRDON marks, runtime evidence systems, certificate outputs, or controlled verification products beyond the licenses explicitly attached to individual components.

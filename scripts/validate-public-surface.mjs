@@ -60,13 +60,13 @@ async function main() {
   }
 
   checks.push(
-    new RegExp(privateRoomName, "i").test(readme)
-      ? fail("README excludes private AI-room operations")
-      : pass("README excludes private AI-room operations")
+    /private credentials|internal operator controls|private runtime material/i.test(readme)
+      ? pass("README states private operation boundary")
+      : fail("README states private operation boundary")
   );
 
   checks.push(
-    new RegExp(`${privateRoomName}|AI\\s+Room|operator-only|control\\s+plane|KITTY|VXSTATION`, "i").test(readme)
+    /operator-only|control\s+plane|KITTY|ssh\s+root@|\/opt\/|100\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+/i.test(readme)
       ? fail("README excludes private operation details")
       : pass("README excludes private operation details")
   );

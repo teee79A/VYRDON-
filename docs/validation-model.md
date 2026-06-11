@@ -53,3 +53,32 @@ evidence/repo-public-surface/<timestamp>.json written
 ## Public Documentation Boundary
 
 Public docs may describe VYRDON, VYRDX, the certificate flow, public links, and public API routes. Public docs must not publish secrets, internal hostnames, untracked automation, unsupported launch claims, or non-public runtime operations.
+
+## VYRDON Mother Droplet Staging Gate
+
+The Mother Terminal droplet package is valid only when these checks are true:
+
+```text
+DROPLET_PREFLIGHT_BEFORE_MUTATION
+DIGITALOCEAN_SNAPSHOT_CONFIRMED_BY_OWNER
+ALLOWLIST_PACKAGE_ONLY
+NO_SECRET_PATHS_OR_RAW_SECRET_MARKERS
+TIMESTAMPED_RELEASE_UNDER_OPT_VYRDON_MOTHER
+CURRENT_SYMLINK_ONLY_AFTER_STAGE_APPROVAL
+NO_VYRDX_DEPLOY
+NO_CLOUDFLARE_OR_DNS_MUTATION
+NO_PUBLIC_DATABASE_PORT
+NO_PUBLIC_CUTOVER
+```
+
+Validation commands:
+
+```bash
+bash -n ops/droplet/preflight-vyrdon-mother-droplet.sh
+bash -n ops/droplet/package-vyrdon-mother.sh
+bash -n ops/droplet/stage-vyrdon-mother.sh
+bash -n ops/droplet/verify-vyrdon-mother-staging.sh
+./ops/droplet/package-vyrdon-mother.sh
+```
+
+Droplet mutation is blocked unless the owner has confirmed a DigitalOcean snapshot and approved staging.
