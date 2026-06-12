@@ -1,0 +1,9 @@
+# VYRDON
+
+VYRDON is Root Routing Law.
+
+Core sentence:
+VYRDON is a root-routing system built on a new routing code. It decides whether proof, authority, transaction state, and execution have the right to pass.
+
+Arabic:
+ڤيردون قانون مسار جذري يحدد متى يمر القرار، ومتى يتوقف، ومتى يُمنع، قبل أن يتحرك المال أو الصلاحية أو التنفيذ.

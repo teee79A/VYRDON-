@@ -1,94 +1,84 @@
-# Validation Model (VYRDON Split Hardening)
+# Validation Model
 
-This document defines **what must be true** before promoting changes to a real-market rollout. It is written to be executed as a checklist.
+This document defines the public validation model for the VYRDON / VYRDX repository surface.
 
-## 1) VYRDEN AI Communication Failure Path (Exact)
+## Public Surface Gate
 
-**Primary path (browser / operator):**
+The repository public surface passes only when these checks are true:
 
 ```text
-Browser UI → Cloudflare Tunnel/Access → Fastify server
-  → auth (session | CF Access | shared secret)
-  → /api/chat or /ws
-  → inference router (Cloudflare Workers AI | MiniMax | Ollama | OpenRouter)
-  → response (JSON or SSE/WebSocket)
+README_PRESENT
+WIKI_SOURCE_PRESENT
+PUBLIC_API_FLOW_PRESENT
+CERTIFICATE_FLOW_PRESENT
+LICENSE_BOUNDARY_PRESENT
+NO_UNTRACKED_AUTO_POST
+NO_NON_PUBLIC_RUNTIME_EXPOSURE
 ```
 
-**Failure gates (in order to check):**
-1. **Cloudflare Access deny**: `403` before your app (policy/service token miswired).
-2. **App auth deny**: `401` on `/api/*` or WS close `1008 UNAUTHORIZED` (missing `cf-access-*` headers, session, or shared secret).
-3. **Cookie/session not sticking**: `/auth/login` returns OK but next call is `401` (common when cookies are `Secure` and you test over plain `http://`).
-4. **Inference is offline**: `/api/chat` returns `offline-fallback` (provider secrets missing, provider error, or Ollama down).
-5. **Boot-time crash**: service never reaches `/health` (missing required env like `AIROOM_SECRET` / DB password).
+If any required item is missing, the result is `NOPASS`.
 
-## 2) Hardening & Fix Order (VYRDEN AI Domain)
+## Required Public API Flow
 
-1. **OS baseline** (droplet): update packages, then reboot if required.
-2. **Pin runtime**: install a known Node LTS version and confirm `node --version` matches your deploy expectation.
-3. **Bind private-by-default**: run AI room on `127.0.0.1` and expose only via Cloudflare tunnel (no direct `0.0.0.0` ingress).
-4. **Default-deny auth**: require *one* of (Cloudflare Access service token, authenticated session, shared secret) for every non-public route.
-5. **Narrow CORS**: allow only the intended origins; do not use `*` with credentials.
-6. **Auditability**: ensure `journalctl` logs, evidence/audit directories, and rate limiting are on.
+```text
+POST /api/monitor/feedback
+POST /api/try-us
+POST /api/certify
+GET  /api/verify/:id
+```
 
-## 3) Deployment Cut (Hardened Split)
+## Status Requirements
 
-Goal: **no mixed public + hidden control planes on the same ingress surface**.
+The public docs must state:
 
-- **KITTY / VXSTATION droplet**: control-plane runtime + operator surfaces (port 7800 local-only + tunnel).
-- **VYRDx-only droplet**: the public product surface and its dependencies (no AI-room routes, no hidden mutation endpoints).
-- **VYRDEN AI Room**: separate service boundary (own systemd unit + tunnel), authenticated, and not treated as a public API.
+- Controlled teaser / prelaunch
+- No fake completion
+- No untracked action
 
-If you must co-locate temporarily, keep these boundaries:
-- separate systemd units
-- separate `/opt/<service>` roots
-- separate Cloudflare tunnel configs
-- bind services to `127.0.0.1` and block direct IP access
+## Evidence Requirement
 
-## 4) Exact Services / Files / Build Scripts (Reference Implementation)
+Run:
 
-**VXSTATION (KITTY control plane)**
-- systemd: `vxstation.service`
-- deploy script: `deploy/deploy.sh`
-- tunnel config: `deploy/cloudflare-tunnel.yml`
-- runtime root: `/opt/vxstation/{releases,shared,current}`
-
-**VYRDEN AI Room**
-- systemd: `vyrden-airoom.service` (+ optional tunnel unit)
-- deploy script: `deploy/deploy-vyrden-airoom.sh`
-- tunnel config: `deploy/cloudflare-tunnel-vyrden.yml`
-- runtime root: `/opt/vyrden-airoom/{releases,shared,current}`
-
-## 5) Operator Validation Commands (Run on Each Host)
-
-**Service + port sanity**
 ```bash
-systemctl is-active vxstation vyrden-airoom cloudflared || true
-ss -ltnp | rg ":(7800|3100)\\b" || true
-journalctl -u vxstation -n 50 --no-pager || true
-journalctl -u vyrden-airoom -n 50 --no-pager || true
+node scripts/validate-public-surface.mjs
 ```
 
-**Local health (must succeed)**
+Expected result:
+
+```text
+ok: true
+evidence/repo-public-surface/<timestamp>.json written
+```
+
+## Public Documentation Boundary
+
+Public docs may describe VYRDON, VYRDX, the certificate flow, public links, and public API routes. Public docs must not publish secrets, internal hostnames, untracked automation, unsupported launch claims, or non-public runtime operations.
+
+## VYRDON Mother Droplet Staging Gate
+
+The Mother Terminal droplet package is valid only when these checks are true:
+
+```text
+DROPLET_PREFLIGHT_BEFORE_MUTATION
+DIGITALOCEAN_SNAPSHOT_CONFIRMED_BY_OWNER
+ALLOWLIST_PACKAGE_ONLY
+NO_SECRET_PATHS_OR_RAW_SECRET_MARKERS
+TIMESTAMPED_RELEASE_UNDER_OPT_VYRDON_MOTHER
+CURRENT_SYMLINK_ONLY_AFTER_STAGE_APPROVAL
+NO_VYRDX_DEPLOY
+NO_CLOUDFLARE_OR_DNS_MUTATION
+NO_PUBLIC_DATABASE_PORT
+NO_PUBLIC_CUTOVER
+```
+
+Validation commands:
+
 ```bash
-curl -sf http://127.0.0.1:7800/health >/dev/null
-curl -sf http://127.0.0.1:3100/health >/dev/null
+bash -n ops/droplet/preflight-vyrdon-mother-droplet.sh
+bash -n ops/droplet/package-vyrdon-mother.sh
+bash -n ops/droplet/stage-vyrdon-mother.sh
+bash -n ops/droplet/verify-vyrdon-mother-staging.sh
+./ops/droplet/package-vyrdon-mother.sh
 ```
 
-**AI-room auth + chat (must succeed)**
-```bash
-login="$(curl -sf -X POST http://127.0.0.1:3100/auth/login -H 'content-type: application/json' --data '{\"guest\":true}')"
-sid="$(node -e 'const j=JSON.parse(process.argv[1]);process.stdout.write(j.sessionId||\"\")' "$login")"
-stok="$(node -e 'const j=JSON.parse(process.argv[1]);process.stdout.write(j.sessionToken||\"\")' "$login")"
-curl -sf -X POST http://127.0.0.1:3100/api/chat \
-  -H 'content-type: application/json' \
-  -H "x-session-id: $sid" \
-  -H "x-session-token: $stok" \
-  --data '{"prompt":"health ping","maxTokens":64}' | head
-```
-
-**Fail-closed check (must be denied)**
-```bash
-curl -s -o /dev/null -w "%{http_code}\n" -X POST http://127.0.0.1:3100/api/memory/flush
-```
-
-Expected: `401`/`403` (never `200`) for internal mutation routes without auth.
+Droplet mutation is blocked unless the owner has confirmed a DigitalOcean snapshot and approved staging.

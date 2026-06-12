@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /internal
+Disallow: /private
+Disallow: /ops
+Disallow: /.git
+
+Sitemap: https://vyrdon.com/sitemap.xml
